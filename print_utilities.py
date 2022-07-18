@@ -1,14 +1,13 @@
 import numpy as np
 
-from constants import DEFAULT_SIZE, OVERBAR
+from constants import DEFAULT_SIZE, OVERBAR, ASPECT_RATIO
 
 
 
-def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_SIZE):
+def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_SIZE, include_coordinates=True):
     width = max_x - min_x + 1
     height = max_y - min_y + 2
     element_rectangular_dict = {hex_obj.rectangular_coordinates: hex_obj for hex_obj in element_dict.values()}
-    ASPECT_RATIO = 1.7
     full_building_blocks = []
     size_x = int(round(size * ASPECT_RATIO)) + 2
     block_width = size_x + 2 * 1
@@ -46,14 +45,17 @@ def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_
                                             ii + (jj % 2) * (min_x % 2) - min_y)   # - (min_y % 2))
         x_center = int((size_x + size + 1) * (adjusted_rectangular_coordinates[0] + 0.5)) + 1
         y = int(size * 2 * adjusted_rectangular_coordinates[1] + 1 + (adjusted_rectangular_coordinates[0] % 2 + 1) * size - int((len(element.text) + 1) / 2))
-        text_broken_up = element.text
+        if include_coordinates:
+            text_broken_up = [str(element.cubic_coordinates)] + element.text
+        else:
+            text_broken_up = element.text
         if len(text_broken_up) > 2 * size:
             text_broken_up = text_broken_up[:2 * size]
         vertical_offset = len(text_broken_up) // 2
         for ind, chars in enumerate(text_broken_up):
             if ind >= size * 2 - 1:
                 break
-            space = size_x + 2 * min(ind, abs(ind + 1 - size * 2))
+            space = size_x + 2 * min(ind, abs(ind + 1 - size * 2)) + size
             if space < len(chars):
                 chars = chars[0:space]
             x = x_center - int(len(chars)/2)

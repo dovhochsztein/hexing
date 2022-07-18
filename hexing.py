@@ -1,4 +1,4 @@
-from copy import *
+from copy import copy, deepcopy
 
 from array_index_generation import generate_rhombal_array_indices, generate_radial_array_indices, \
     generate_angular_rhombal_array_indices, generate_triangular_array_indices, generate_star_array_indices
@@ -40,7 +40,7 @@ class Hex:
       \_______/  /           \           \_______/  /           \
 
     """
-    def __init__(self, coordinates: tuple = (0, 0, 0), obj: Any = None):
+    def __init__(self, coordinates: tuple[int, int, int] = (0, 0, 0), obj: Any = None):
         coordinates = complete_cubic_coordinates(coordinates)
         self.cubic_coordinates = coordinates
         self.rectangular_coordinates = (int(coordinates[0]), int(coordinates[2] + (coordinates[0] - (coordinates[0] % 2)) / 2))
@@ -94,8 +94,9 @@ class Grid:
         self.max_y = None
         self.extents = None
 
-    def __init__(self, elements=None, size=DEFAULT_SIZE):
-        self.size=size
+    def __init__(self, elements=None, size=DEFAULT_SIZE, print_coordinates=True):
+        self.size = size
+        self.print_coordinates = print_coordinates
         if elements is None:
             self.empty()
             return
@@ -191,7 +192,6 @@ class Grid:
             operation_funx = getattr(element.obj, base_operation)
             other_obj = other.element_dict[element.cubic_coordinates].obj if isinstance(other, Grid) else other
             element.change(operation_funx(other_obj))
-        return element.obj
 
     def __neg__(self):
         return self.unary_elementwise_operation('__neg__')
@@ -266,40 +266,40 @@ class Grid:
         return self.binary_elementwise_operation(other, '__ne__')
 
     def __iadd__(self, other):
-        return self.elementwise_augmentation_operation(other, '__iadd__')
+        self.elementwise_augmentation_operation(other, '__iadd__')
 
     def __isub__(self, other):
-        return self.elementwise_augmentation_operation(other, '__isub__')
+        self.elementwise_augmentation_operation(other, '__isub__')
 
     def __imul__(self, other):
-        return self.elementwise_augmentation_operation(other, '__imul__')
+        self.elementwise_augmentation_operation(other, '__imul__')
 
     def __ifloordiv__(self, other):
-        return self.elementwise_augmentation_operation(other, '__ifloordiv__')
+        self.elementwise_augmentation_operation(other, '__ifloordiv__')
 
     def __itruediv__(self, other):
-        return self.elementwise_augmentation_operation(other, '__itruediv__')
+        self.elementwise_augmentation_operation(other, '__itruediv__')
 
     def __imod__(self, other):
-        return self.elementwise_augmentation_operation(other, '__imod__')
+        self.elementwise_augmentation_operation(other, '__imod__')
 
     def __ipow__(self, other):
-        return self.elementwise_augmentation_operation(other, '__ipow__')
+        self.elementwise_augmentation_operation(other, '__ipow__')
 
     def __ilshift__(self, other):
-        return self.elementwise_augmentation_operation(other, '__ilshift__')
+        self.elementwise_augmentation_operation(other, '__ilshift__')
 
     def __irshift__(self, other):
-        return self.elementwise_augmentation_operation(other, '__irshift__')
+        self.elementwise_augmentation_operation(other, '__irshift__')
 
     def __iand__(self, other):
-        return self.elementwise_augmentation_operation(other, '__iand__')
+        self.elementwise_augmentation_operation(other, '__iand__')
 
     def __ior__(self, other):
-        return self.elementwise_augmentation_operation(other, '__ior__')
+        self.elementwise_augmentation_operation(other, '__ior__')
 
     def __ixor__(self, other):
-        return self.elementwise_augmentation_operation(other, '__ixor__')
+        self.elementwise_augmentation_operation(other, '__ixor__')
 
 
     def update_min_max(self, cubic_coordinates, rectangular_coordinates):
@@ -400,7 +400,7 @@ class Grid:
             pass
 
     def __str__(self):
-        return generate_visual_grid(self.element_dict, self.min_x, self.min_y, self.max_x, self.max_y, size=self.size)
+        return generate_visual_grid(self.element_dict, self.min_x, self.min_y, self.max_x, self.max_y, size=self.size, include_coordinates=self.print_coordinates)
 
     def __repr__(self):
         return f'Grid({self.element_list})'
@@ -430,6 +430,15 @@ def full(mode='radial', fill_value=None, origin=None, radius=None, starting_coor
     element_list = [Hex(coordinates, fill_value) for coordinates in coordinate_list]
     grid = Grid(element_list, size=size)
     return grid
+
+
+def all(grid: Grid):
+    for hex in grid.element_dict.values():
+        if not hex.obj:
+            print('a')
+            return False
+    else:
+        return True
 
 
 def generate_radial_hex_array(radius, fill_value=None, origin=None):
@@ -470,15 +479,18 @@ if __name__ == '__main__':
     g = generate_radial_hex_array(3)
     R = g[-2:0, -1:0, 3:0]
     print(R)
-    t = full(mode='triangular', side_length=3, orientation=3, fill_value='tri')
-    print(t)
+    for orientation in range(6):
+        t = full(mode='triangular', side_length=3, orientation=orientation, fill_value='tri')
+        for element in t.element_list:
+            element.text = ['coord =', str(element.cubic_coordinates)]
+        print(t)
     r = full(mode='radial', radius=2, fill_value='rad')
     print(r)
     s = full(mode='star', radius=3, fill_value='star')
     print(s)
     s = full(mode='star', radius=4, fill_value='s', size=2)
     print(s)
-    s = full(mode='angular_rhombal', radius=4, fill_value='s', size=2)
+    s = full(mode='angular_rhombal', side_length=3, orientation=3, radius=4, fill_value='s', size=2)
     print(s)
 
 
@@ -505,5 +517,6 @@ if __name__ == '__main__':
     print(g)
     print(repr(g))
     num = generate_radial_hex_array(2, 3)
+    num_full = full('radial', 3, radius=2)
     print(num + num)
     print(-num)
