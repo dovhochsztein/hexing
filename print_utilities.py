@@ -1,12 +1,12 @@
 import numpy as np
 
-from constants import DEFAULT_SIZE
+from constants import DEFAULT_SIZE, OVERBAR
+
 
 
 def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_SIZE):
     width = max_x - min_x + 1
     height = max_y - min_y + 2
-    overbar = u'\u0305'
     element_rectangular_dict = {hex_obj.rectangular_coordinates: hex_obj for hex_obj in element_dict.values()}
     ASPECT_RATIO = 1.7
     full_building_blocks = []
@@ -14,7 +14,7 @@ def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_
     block_width = size_x + 2 * 1
     for ii in range(size):
         if ii == 0:
-            new_line = ' ' * (1 - ii - 1) + "/" + overbar * (size_x + ii * 2) + "\\" + ' ' * (1 - ii - 1)
+            new_line = ' ' * (1 - ii - 1) + "/" + OVERBAR * (size_x + ii * 2) + "\\" + ' ' * (1 - ii - 1)
         else:
             new_line = ' ' * (1 - ii - 1) + "/" + ' ' * (size_x + ii * 2) + "\\" + ' ' * (1 - ii - 1)
         full_building_blocks.append(new_line)

@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from typing import Union
 
 
 def translation(cubic_coordinates, direction, distance):
@@ -43,18 +44,19 @@ def x_y_z_sign_convention(orientation):
     return x_constraint, y_constraint, z_constraint
 
 
-def convert_cubic_coordinates_to_rectangular(cubic_coordinates):
+def convert_cubic_coordinates_to_rectangular(cubic_coordinates: tuple[int, int, int]) -> tuple[int, int]:
     rectangular_coordinates = (cubic_coordinates[0], int(cubic_coordinates[2] + (cubic_coordinates[0] - (cubic_coordinates[0] % 2)) / 2))
     return rectangular_coordinates
 
 
-def convert_rectangular_coordinates_to_cubic(rectangular_coordinates):
+def convert_rectangular_coordinates_to_cubic(rectangular_coordinates: tuple[int, int]) -> tuple[int, int, int]:
     cubic_coordinates = (rectangular_coordinates[0], 0, rectangular_coordinates[1] - (rectangular_coordinates[0] - (rectangular_coordinates[0] % 1)) / 2)
     cubic_coordinates = (cubic_coordinates[0], -cubic_coordinates[0] - cubic_coordinates[2], cubic_coordinates[2])
     return cubic_coordinates
 
 
-def convert_cubic_coordinates_to_polar(cubic_coordinates):
+def convert_cubic_coordinates_to_polar(cubic_coordinates: tuple[int, int, int])\
+        -> (float, float):
     positional_rectangular_x = cubic_coordinates[0] * math.sin(math.pi/3)
     positional_rectangular_y = (cubic_coordinates[1] - cubic_coordinates[2]) / 2
     radius = math.sqrt(positional_rectangular_x ** 2 + positional_rectangular_y ** 2)
@@ -68,7 +70,9 @@ def convert_cubic_coordinates_to_polar(cubic_coordinates):
     return radius, angle
 
 
-def complete_cubic_coordinates(incomplete_cubic_coordinates):
+def complete_cubic_coordinates(
+        incomplete_cubic_coordinates: Union[tuple[int, int], tuple[int, int, int]])\
+        -> tuple[int, int, int]:
     if len(incomplete_cubic_coordinates) == 2 or incomplete_cubic_coordinates[2] is None:
         cubic_coordinates = (incomplete_cubic_coordinates[0],
                              incomplete_cubic_coordinates[1],

@@ -1,8 +1,28 @@
 from array_index_generation import generate_rhombal_array_indices
 from math_utilities import complete_cubic_coordinates
+from typing import Union
 
 
-def unpack_key(key, extents):
+def unpack_key(key: Union[int, slice, tuple], extents: list[list, list, list])\
+        -> Union[list[tuple[int, int, int]], tuple[int, int, int]]:
+    """
+
+    :param key: index key for slicing a Grid object.
+    Supports the following formats:
+        - int: uses the int as the x coordinate and gives the subgrid containing
+            all such Hex elements
+        - 2-tuple of ints: uses the ints as x and y coordinates and returns the
+            single Hex element
+        - 3-tuple of ints: uses the first two coordinates as x, y and confirms
+            the third is consistent with the z value of the associated Hex
+            element. returns that Hex element
+        - 2-tuple or 3 tuple of ints/slices/None: as long as there are at least
+            two non-None values in the tuple, the associated subgrid generated
+            by slicing the Grid object (a rhombal array with the two acute
+            vertices given by the edges of the slices) is returned.
+    :param extents: x, y, z extents of the Grid object
+    :return:
+    """
     if isinstance(key, int):
         key = (key, slice(None))
     if isinstance(key, tuple):

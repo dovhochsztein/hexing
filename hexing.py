@@ -6,16 +6,23 @@ from constants import DEFAULT_SIZE
 from math_utilities import complete_cubic_coordinates
 from grid_utilities import unpack_key
 from print_utilities import generate_visual_grid
+from typing import Any
 
 # todo:
 # remove element list,
 # fix print text to consider new lines without requiring list of strings
 # get rid of changing rectangular coordinates
 # consider multiple versions of rectangular coordinates
+# change "rhombal" to "paralellogram"
+
 
 class Hex:
     """Hexagonal grid element (cubic coordinates)
-    sign convention for rectangular coordinates based on 'odd-q' offset coordinates https://www.redblobgames.com/grids/hexagons/
+    sign convention for rectangular coordinates based on 'odd-q' offset
+    coordinates https://www.redblobgames.com/grids/hexagons/
+
+    The coordinates of the hex defaults to (0, 0, 0).
+    The stored object defaults to None.
 
     Cubic:                              Rectangular
        _______                            _______
@@ -33,7 +40,7 @@ class Hex:
       \_______/  /           \           \_______/  /           \
 
     """
-    def __init__(self, coordinates=(0, 0, 0), obj=None):
+    def __init__(self, coordinates: tuple = (0, 0, 0), obj: Any = None):
         coordinates = complete_cubic_coordinates(coordinates)
         self.cubic_coordinates = coordinates
         self.rectangular_coordinates = (int(coordinates[0]), int(coordinates[2] + (coordinates[0] - (coordinates[0] % 2)) / 2))
@@ -414,7 +421,7 @@ def full(mode='radial', fill_value=None, origin=None, radius=None, starting_coor
     elif mode == 'triangular':
         assert isinstance(side_length, int)
         coordinate_list = generate_triangular_array_indices(side_length, orientation, origin)
-    elif mode == 'angular_rhomal':
+    elif mode == 'angular_rhombal':
         assert isinstance(side_length, int)
         coordinate_list = generate_angular_rhombal_array_indices(side_length, orientation, origin)
     else:
@@ -471,6 +478,8 @@ if __name__ == '__main__':
     print(s)
     s = full(mode='star', radius=4, fill_value='s', size=2)
     print(s)
+    s = full(mode='angular_rhombal', radius=4, fill_value='s', size=2)
+    print(s)
 
 
 
@@ -497,4 +506,4 @@ if __name__ == '__main__':
     print(repr(g))
     num = generate_radial_hex_array(2, 3)
     print(num + num)
-    -num
+    print(-num)
