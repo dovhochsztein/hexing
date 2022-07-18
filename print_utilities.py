@@ -1,9 +1,9 @@
 import numpy as np
 
-from constants import defaul_sie
+from constants import DEFAULT_SIZE
 
 
-def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=defaul_sie):
+def generate_visual_grid(element_dict, min_x, min_y, max_x, max_y, size=DEFAULT_SIZE):
     width = max_x - min_x + 1
     height = max_y - min_y + 2
     overbar = u'\u0305'

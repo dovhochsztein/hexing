@@ -2,7 +2,7 @@ from copy import *
 
 from array_index_generation import generate_rhombal_array_indices, generate_radial_array_indices, \
     generate_angular_rhombal_array_indices, generate_triangular_array_indices, generate_star_array_indices
-from constants import defaul_sie
+from constants import DEFAULT_SIZE
 from math_utilities import complete_cubic_coordinates
 from grid_utilities import unpack_key
 from print_utilities import generate_visual_grid
@@ -87,7 +87,7 @@ class Grid:
         self.max_y = None
         self.extents = None
 
-    def __init__(self, elements=None, size=defaul_sie):
+    def __init__(self, elements=None, size=DEFAULT_SIZE):
         self.size=size
         if elements is None:
             self.empty()
@@ -400,7 +400,7 @@ class Grid:
 
 
 def full(mode='radial', fill_value=None, origin=None, radius=None, starting_coordinates=None, ending_coordinates=None,
-         side_length=None, orientation=None, size=defaul_sie):
+         side_length=None, orientation=None, size=DEFAULT_SIZE):
 
     if mode == 'radial':
         assert isinstance(radius, int)
